@@ -4,3 +4,4 @@
 
 1. horse/bus.jpg :  test image files
 2. Inference_webcam_exam.py : we can inference via webcam.....!
+3. yolov7-tiny.onnx : weight file for Yolov7 network model
