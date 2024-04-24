@@ -1,8 +1,11 @@
+# Inference for ONNX model
+
 import cv2
-import tensorflow.compat.v1 as tf
 cuda = True
 w = "yolov7-tiny.onnx"
+img = cv2.imread('bus.jpg')
 
+import cv2
 import time
 import requests
 import random
@@ -12,13 +15,17 @@ from PIL import Image
 from pathlib import Path
 from collections import OrderedDict,namedtuple
 
-providers = ['CUDAExecutionProvider', 'CPUExecutionProvider'] if cuda else ['CPUExecutionProvider']
+providers = ['AzureExecutionProvider', 'CPUExecutionProvider'] if cuda else ['CPUExecutionProvider']
 session = ort.InferenceSession(w, providers=providers)
 
-with tf.Session() as sess:
-    x = tf.placeholder(tf.float32, [2])
+tf.compat.disable_v2_behavior()
+with tf.compat.Session() as sess:
+    x = tf.compat.placeholder(tf.float32, [2])
     x2 = tf.square(x)
     print(sess.run(x2, feed_dict={x: [2, 3]}))
+    # [4. 9.]
+    
+print("00000")
 
 def letterbox(im, new_shape=(640, 640), color=(114, 114, 114), auto=True, scaleup=True, stride=32):
     # Resize and pad image while meeting stride-multiple constraints
@@ -59,75 +66,50 @@ names = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', '
          'hair drier', 'toothbrush']
 colors = {name:[random.randint(0, 255) for _ in range(3)] for i,name in enumerate(names)}
 
-webcam = cv2.VideoCapture(0)
-webcam.set(3, 640)
-webcam.set(4, 480)
-ratio_factor = 0.9
+img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-if not webcam.isOpened():
-    print("Could not open webcam")
-    exit()
+image = img.copy()
+image, ratio, dwdh = letterbox(image, auto=False)
+image = image.transpose((2, 0, 1))
+image = np.expand_dims(image, 0)
+image = np.ascontiguousarray(image)
 
-while webcam.isOpened():
-    status, img = webcam.read()
-    
-    height, width = img.shape[:2]
-    img = cv2.resize(img, (1280, 720))
+print("11111")
 
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+im = image.astype(np.float32)
+im /= 255
+im.shape
 
-    image = img.copy()
-    image, ratio, dwdh = letterbox(image, auto=False)
-    image = image.transpose((2, 0, 1))
-    image = np.expand_dims(image, 0)
-    image = np.ascontiguousarray(image)
+outname = [i.name for i in session.get_outputs()]
+outname
 
-    im = image.astype(np.float32)
-    im /= 255
-    im.shape
+inname = [i.name for i in session.get_inputs()]
+inname
 
-    outname = [i.name for i in session.get_outputs()]
+inp = {inname[0]:im}
 
-    inname = [i.name for i in session.get_inputs()]
+# ONNX inference
+outputs = session.run(outname, inp)[0]
+outputs
 
-    inp = {inname[0]:im}
+ori_images = [img.copy()]
 
-    # ONNX inference
-    outputs = session.run(outname, inp)[0]
+for i,(batch_id,x0,y0,x1,y1,cls_id,score) in enumerate(outputs):
+    image = ori_images[int(batch_id)]
+    box = np.array([x0,y0,x1,y1])
+    box -= np.array(dwdh*2)
+    box /= ratio
+    box = box.round().astype(np.int32).tolist()
+    cls_id = int(cls_id)
+    score = round(float(score),3)
+    name = names[cls_id]
+    color = colors[name]
+    name += ' '+str(score)
+    cv2.rectangle(image,box[:2],box[2:],color,2)
+    cv2.putText(image,name,(box[0], box[1] - 2),cv2.FONT_HERSHEY_SIMPLEX,0.75,[225, 255, 255],thickness=2)  
 
-    ori_images = [img.copy()]
+print('[INFO] draw all detected boxes....!')
 
-    for i,(batch_id,x0,y0,x1,y1,cls_id,score) in enumerate(outputs):
-        image = ori_images[int(batch_id)]
-        box = np.array([x0,y0,x1,y1])
-        box -= np.array(dwdh*2)
-        box /= ratio
-        box = box.round().astype(np.int32).tolist()
-        cls_id = int(cls_id)
-        score = round(float(score),3)
-        name = names[cls_id]
-        color = colors[name]
-        name += ' '+str(score)
-        cv2.rectangle(image,box[:2],box[2:],color,2)
-        cv2.putText(image,name,(box[0], box[1] - 2),cv2.FONT_HERSHEY_SIMPLEX,0.75,[225, 255, 255],thickness=2)  
-
-    print('KANG YUNA 2311321')    #<===== 여기에 여러분들의 학번이 표시되도록 합니다.
-
-    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR) # PIL image --> opencv image Mat buffer
-    
-    if status:
-        cv2.imshow("results",image)
-    
-    #if status:
-    #    img=Image.fromarray(ori_images[0])
-    #    img.save('output.png')
-    #    img.show()
-    #    cv2.imshow(img)
-
-    if cv2.waitKey(10) & 0xFF == ord('q'):
-        break
-
-webcam.release()
-cv2.destroyAllWindows()
-
-
+img=Image.fromarray(ori_images[0])
+img.save('output.png')
+img.show()
