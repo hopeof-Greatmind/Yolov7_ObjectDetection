@@ -8,3 +8,4 @@
 3. Inference_exam.py  : Inference process of the still image. You have to use -I option
 4. yolov7-tiny.onnx : weight file for Yolov7 network model based on the onnx transformation.
 5. GPU Usage: We recommend to use nVida GPU, otherwise it will be very slow.
+6. How use this program?
