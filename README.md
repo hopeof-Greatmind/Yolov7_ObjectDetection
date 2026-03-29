@@ -10,4 +10,4 @@
 4. yolov7-tiny.onnx : weight file for Yolov7 network model based on the onnx transformation.
 5. GPU Usage: We recommend to use nVida GPU, otherwise it will be very slow.
 6. How use this program?
-7. Environment; nVideia GPU required for training.
+7. Environment; nVideia GPU required for training. otherwise, you can use Google cloud (free cost) based on Google colab!
