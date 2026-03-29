@@ -2,6 +2,7 @@
 ## Items: Network weight by ONNX standard, inference code
 ### This was from Prof. Kim Byung-Gyu on 2024. 04. 21.
 ### Updated on 2025.03.17 by Prof. Kim Byung-Gyu 
+### Updated on 2026.03.29 by Prof. Kim Byung-Gyu 
 
 1. horse/bus.jpg :  test image files
 2. Inference_webcam_exam.py : we can make inference process via webcam.....!
@@ -9,3 +10,4 @@
 4. yolov7-tiny.onnx : weight file for Yolov7 network model based on the onnx transformation.
 5. GPU Usage: We recommend to use nVida GPU, otherwise it will be very slow.
 6. How use this program?
+7. Environment; nVideia GPU required for training.
