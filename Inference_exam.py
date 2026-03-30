@@ -1,6 +1,6 @@
 # Inference for ONNX model
 # Checked on 2025. 04. 02 by Prof. Kim
-# 2026.03.30
+# Checked on 2026.03.30
 
 import cv2
 import tensorflow as tf
