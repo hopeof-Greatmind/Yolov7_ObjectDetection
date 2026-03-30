@@ -2,9 +2,7 @@
 ## Items: Network weight by ONNX standard, inference code
 ### This was from Prof. Kim Byung-Gyu on 2024. 04. 21.
 ### Updated on 2025.03.17 by Prof. Kim Byung-Gyu 
-### Updated on 2026.03.29 by Prof. Kim Byung-Gyu 
-# Updated on 2026. 03. 30 by PRof. Kim
-
+### Updated on 2026.03.30 by Prof. Kim
 
 1. horse/bus.jpg :  test image files
 2. Inference_webcam_exam.py : we can make inference process via webcam.....!
