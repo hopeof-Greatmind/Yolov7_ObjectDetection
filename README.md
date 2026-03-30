@@ -6,6 +6,11 @@
 # Updated on 2026. 03. 30 by PRof. Kim
 
 
+#에 따라 글자크기 달라짐
+### 아이고 
+## 진짜네
+###### 잉? 
+
 1. horse/bus.jpg :  test image files
 2. Inference_webcam_exam.py : we can make inference process via webcam.....!
 3. Inference_exam.py  : Inference process of the still image. You have to use -I option
