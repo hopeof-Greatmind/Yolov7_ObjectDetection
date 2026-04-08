@@ -1,7 +1,10 @@
 # Inference for ONNX model
 # Checked on 2025. 04. 02 by Prof. Kim
 # 이것저것 추가 할 겨..
+#dndhkd
+#dndnd
 
+#dhkdhd
 import cv2
 import tensorflow as tf
 cuda = True
